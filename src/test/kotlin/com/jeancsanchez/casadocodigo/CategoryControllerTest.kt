@@ -1,6 +1,6 @@
 package com.jeancsanchez.casadocodigo
 
-import com.jeancsanchez.casadocodigo.author.AuthorForm
+import com.jeancsanchez.casadocodigo.category.CategoryForm
 import org.junit.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -12,23 +12,23 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
  * Jesus is alive!
  */
 
-internal class AuthorEntityControllerTest : BaseControllerTests() {
+internal class CategoryControllerTest : BaseControllerTests() {
 
-    private val authorForm = AuthorForm(name = "newAuthor", email = "validemail@email.com", description = "Hello")
+    private val categoryForm = CategoryForm(name = "Programming")
 
     @Test
-    fun whenEmailIsValid_thenReturnsStatus201() {
-        val body = mapper.writeValueAsString(authorForm)
-        mvc.perform(post("/authors")
+    fun whenNameIsValid_thenReturnsStatus201() {
+        val body = mapper.writeValueAsString(categoryForm)
+        mvc.perform(post("/categories")
                 .contentType(jsonContentType)
                 .content(body))
                 .andExpect(status().isCreated)
     }
 
     @Test
-    fun whenEmailIsInvalid_thenReturnsStatus400() {
-        val body = mapper.writeValueAsString(authorForm.copy(email = "invalidEmailDotCom"))
-        mvc.perform(post("/authors")
+    fun whenNameIsInvalid_thenReturnsStatus400() {
+        val body = mapper.writeValueAsString(categoryForm.copy(name = ""))
+        mvc.perform(post("/categories")
                 .contentType(jsonContentType)
                 .content(body))
                 .andExpect(status().isBadRequest)

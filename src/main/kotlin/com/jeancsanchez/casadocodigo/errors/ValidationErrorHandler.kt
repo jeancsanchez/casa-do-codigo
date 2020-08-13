@@ -8,6 +8,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.client.HttpServerErrorException
+import java.lang.IllegalArgumentException
+import javax.persistence.PersistenceException
+import javax.validation.ConstraintViolationException
 
 /**
  * @author Jean Carlos (Github: @jeancsanchez)
@@ -27,5 +31,17 @@ class ValidationErrorHandler {
             val message = messageSource.getMessage(it, LocaleContextHolder.getLocale())
             ErrorResponseDTO(field = it.field, message = message)
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintError(exception: ConstraintViolationException): List<ErrorResponseDTO> {
+        return listOf(ErrorResponseDTO("erro", "Erro de contraint"))
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(PersistenceException::class)
+    fun handleValidationError(exception: PersistenceException): List<ErrorResponseDTO> {
+        return listOf(ErrorResponseDTO("erro", "Erro de integridade referencial"))
     }
 }
